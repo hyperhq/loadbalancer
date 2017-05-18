@@ -38,24 +38,15 @@ func newHyperClient(apiServer, apiVersion, accessKey, secretKey string) (*client
 }
 
 func newHyperWSClient(apiServer, apiVersion, accessKey, secretKey string) (*wsclient.HyperWSClient, error) {
-	proto, addr, _, err := client.ParseHost(apiServer)
+	_, addr, _, err := client.ParseHost(apiServer)
 	if err != nil {
 		return nil, err
 	}
-
-	config, err := tlsconfig.Client(tlsconfig.Options{InsecureSkipVerify: true})
-	if err != nil {
-		return nil, err
-	}
-	tr := &http.Transport{
-		TLSClientConfig: config,
-	}
-	sockets.ConfigureTransport(tr, proto, addr)
 
 	headers := map[string]string{
 		"User-Agent": UserAgent,
 	}
-	c, err := wsclient.NewHyperWSClient(proto, addr, apiVersion, accessKey, secretKey, headers)
+	c, err := wsclient.NewHyperWSClient("wss", addr, apiVersion, accessKey, secretKey, headers)
 	if err != nil {
 		return nil, err
 	}

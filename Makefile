@@ -5,7 +5,7 @@ PREFIX ?= hyperhq/labeled-loadbalancer
 SRC = loadbalancer.go loadbalancer_log.go utils.go client.go
 
 loadbalancer: $(SRC)
-	GOPATH=$(GOPATH) CGO_ENABLED=0 GOOS=linux godep go build -a -installsuffix cgo -ldflags '-w' -o $@ $(SRC)
+	GOPATH=$(GOPATH) CGO_ENABLED=0 GOOS=linux go build -a -installsuffix cgo -ldflags '-w' -o $@ $(SRC)
 
 container: loadbalancer
 	docker build -t $(PREFIX):$(TAG) .
