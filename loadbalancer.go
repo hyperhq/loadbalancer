@@ -278,7 +278,8 @@ func (lbc *loadBalancerController) updateEndpoints(ev *htypes.EventResponse) err
 			i    int
 			addr string
 		)
-		for i, addr = range lbc.endpoints {
+		for i = 0 ; i < len(lbc.endpoints) ; i++ {
+			addr = lbc.endpoints[i]
 			if addr == n.IPAddress {
 				break
 			}
@@ -289,9 +290,11 @@ func (lbc *loadBalancerController) updateEndpoints(ev *htypes.EventResponse) err
 		} else if !c.State.Running && i < len(lbc.endpoints) { //stopped but in list
 			glog.Infof("remove ip of container %s %s", ev.Id, n.IPAddress)
 			lbc.endpoints = append(lbc.endpoints[:i], lbc.endpoints[i+1:]...)
+		} else {
+			glog.Infof("container %s ip: %s, running: %v", ev.Id, n.IPAddress, c.State.Running)
 		}
 	}
-	
+
 	httpSvc, httpsSvc, httpsTermSvc, tcpSvc := lbc.getServices()
 	if err := lbc.cfg.write(
 		map[string][]service{
