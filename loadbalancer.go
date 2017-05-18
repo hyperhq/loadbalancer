@@ -379,7 +379,7 @@ func (lbc *loadBalancerController) worker() {
 	for {
 		filters := []string{}
 		for k, v := range lbc.cfg.Labels {
-			filters = append(filters, fmt.Sprintf("%s=%s", k, v))
+			filters = append(filters, fmt.Sprintf("label=%s=%s", k, v))
 		}
 		events, errCh, cancelFunc, err = lbc.wsclient.Events(filters...)
 		if err != nil {
