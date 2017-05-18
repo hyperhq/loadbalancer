@@ -291,7 +291,18 @@ func (lbc *loadBalancerController) updateEndpoints(ev *htypes.EventResponse) err
 			lbc.endpoints = append(lbc.endpoints[:i], lbc.endpoints[i+1:]...)
 		}
 	}
-	return nil
+	
+	httpSvc, httpsSvc, httpsTermSvc, tcpSvc := lbc.getServices()
+	if err := lbc.cfg.write(
+		map[string][]service{
+			"http":      httpSvc,
+			"https":     httpsSvc,
+			"httpsTerm": httpsTermSvc,
+			"tcp":       tcpSvc,
+		}); err != nil {
+		return err
+	}
+	return lbc.cfg.reload()
 }
 
 func (lbc *loadBalancerController) checkNewEndpoints() bool {

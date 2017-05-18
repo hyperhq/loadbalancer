@@ -33,7 +33,7 @@ func NewHyperWSClient(scheme, host, version, access, secret string, headers map[
 	}
 
 	if version != "" && version[0] != '/' {
-		version = strings.Join([]string{"/", version}, "")
+		version = strings.Join([]string{"/v", strings.TrimPrefix(version, "v")}, "")
 	}
 
 	return &HyperWSClient{
